@@ -1,4 +1,4 @@
-# Topic Converter 🛠️
+# Topic Converter
 
 Tato složka obsahuje nástroje pro převod a zpracování maturitních témat.
 

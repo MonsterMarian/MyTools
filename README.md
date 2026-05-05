@@ -1,8 +1,8 @@
-# MyTools 🛠️
+# MyTools
 
 Kolekce užitečných nástrojů pro každodenní digitální život.
 
-## 📁 Obsah
+## Obsah
 Momentálně se v tomto repozitáři nachází:
 
 ### 1. Topic Converter
@@ -12,7 +12,7 @@ Univerzální nástroj pro převod dokumentů mezi různými formáty.
   - **Webové rozhraní**: Moderní drag & drop prostředí pro rychlý převod jednotlivých souborů.
   - **Interaktivní konzole**: Chytrý terminálový průvodce pro hromadné zpracování celých složek.
 
-## 🚀 Jak začít
+## Jak začít
 
 1. **Naklonuj repozitář**:
    ```bash
@@ -29,5 +29,5 @@ Univerzální nástroj pro převod dokumentů mezi různými formáty.
    - Web: `node convert.js --server`
    - Konzole: `node convert.js`
 
-## 📝 Licence
+## Licence
 Tento projekt je určen pro osobní a studijní účely.
