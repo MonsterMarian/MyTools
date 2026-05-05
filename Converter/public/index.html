@@ -3,27 +3,102 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Universal Converter - Web Mode</title>
-    <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <title>Universal Converter - Brutal Edition</title>
+    <link rel="stylesheet" href="brutalist-base.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* Small overrides to bridge the gap */
+        .format-selection {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        .format-selection .form-group {
+            flex: 1;
+        }
+        .arrow {
+            font-size: 1.5rem;
+            color: var(--brut-accent);
+            padding-top: 1rem;
+            font-family: var(--font-mono);
+        }
+        .file-input-wrapper {
+            position: relative;
+            width: 100%;
+            height: 150px;
+            border: 2px dashed var(--brut-border);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 2rem;
+            background: var(--brut-surface);
+            transition: border-color 0.2s;
+        }
+        .file-input-wrapper:hover {
+            border-color: var(--brut-accent);
+        }
+        .file-input-wrapper input {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+        }
+        .status {
+            margin-top: 2rem;
+            padding: 1rem;
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            border-left: 4px solid transparent;
+        }
+        .status.loading { color: var(--brut-muted); border-color: var(--brut-muted); }
+        .status.success { background: rgba(34, 197, 94, 0.1); color: var(--brut-accent); border-color: var(--brut-accent); }
+        .status.error { background: rgba(239, 68, 68, 0.1); color: var(--brut-danger); border-color: var(--brut-danger); }
+        
+        select {
+            width: 100%;
+            background: var(--brut-surface);
+            border: 1px solid var(--brut-border);
+            color: var(--brut-white);
+            padding: 0.75rem;
+            font-family: var(--font-mono);
+            outline: none;
+        }
+        select:focus {
+            border-color: var(--brut-accent);
+        }
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--brut-muted);
+            font-weight: 700;
+        }
+    </style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>Universal <span>Converter</span></h1>
-            <p>Rychlý a prémiový převod vašich dokumentů</p>
+    <div class="viewport">
+        <header class="masthead">
+            <h1>Universal <span>Converter</span> <span class="version">v2.1</span></h1>
+            <div class="short-description">BRUTAL STRENGTH EDITION</div>
         </header>
 
         <main>
             <div class="card">
+                <div class="card-title">Konfigurace převodu</div>
+                
                 <form id="convertForm">
                     <div class="form-group">
-                        <label for="file">Vyberte soubor</label>
+                        <label>Vstupní soubor</label>
                         <div class="file-input-wrapper">
                             <input type="file" id="file" name="file" required>
                             <div class="file-dummy">
-                                <span class="icon">📁</span>
-                                <span class="text">Klikněte nebo přetáhněte soubor</span>
+                                <div style="font-size: 2rem; margin-bottom: 0.5rem;">[ + ]</div>
+                                <div class="file-name" style="font-family: var(--font-mono); font-size: 0.8rem;">VYBERTE SOUBOR</div>
                             </div>
                         </div>
                     </div>
@@ -33,29 +108,32 @@
                             <label for="from">Z formátu</label>
                             <select id="from" name="from">
                                 <option value="docx">DOCX</option>
-                                <option value="md">Markdown</option>
+                                <option value="md">MARKDOWN</option>
                                 <option value="html">HTML</option>
                             </select>
                         </div>
-                        <div class="arrow">→</div>
+                        <div class="arrow">>></div>
                         <div class="form-group">
                             <label for="to">Do formátu</label>
                             <select id="to" name="to">
-                                <option value="md">Markdown</option>
+                                <option value="md">MARKDOWN</option>
                                 <option value="docx">DOCX</option>
                                 <option value="html">HTML</option>
                             </select>
                         </div>
                     </div>
 
-                    <button type="submit" id="submitBtn">Převést a stáhnout</button>
+                    <button type="submit" id="submitBtn" data-slot="button" class="btn-default" style="width: 100%; padding: 1.25rem;">
+                        SPUSTIT PŘEVOD
+                    </button>
                 </form>
-                <div id="status" class="status"></div>
+                
+                <div id="status" class="status" style="display: none;"></div>
             </div>
         </main>
 
-        <footer>
-            <p>&copy; 2026 MyTools Premium</p>
+        <footer style="text-align: center; margin-top: 2rem; font-family: var(--font-mono); font-size: 0.6rem; color: var(--brut-muted);">
+            SYSTEM_STATUS: OPERATIONAL // MYTOOLS_CORE_V2
         </footer>
     </div>
 
@@ -63,41 +141,35 @@
         const form = document.getElementById('convertForm');
         const status = document.getElementById('status');
         const fileInput = document.getElementById('file');
-        const fileDummyText = document.querySelector('.file-dummy .text');
+        const fileNameDisplay = document.querySelector('.file-name');
+        const fromSelect = document.getElementById('from');
+        const toSelect = document.getElementById('to');
+        const submitBtn = document.getElementById('submitBtn');
 
         fileInput.addEventListener('change', (e) => {
             if (e.target.files.length > 0) {
-                fileDummyText.textContent = e.target.files[0].name;
+                fileNameDisplay.textContent = e.target.files[0].name.toUpperCase();
+                fileNameDisplay.style.color = 'var(--brut-accent)';
             }
         });
-
-        const fromSelect = document.getElementById('from');
-        const toSelect = document.getElementById('to');
 
         // Hide same format from 'to' selection
         function updateTargetOptions() {
             const fromValue = fromSelect.value;
             const toOptions = toSelect.options;
-            
             let selectedStillVisible = false;
 
             for (let i = 0; i < toOptions.length; i++) {
                 if (toOptions[i].value === fromValue) {
                     toOptions[i].style.display = 'none';
-                    if (toSelect.value === fromValue) {
-                        // If current selection is now hidden, we must change it
-                        selectedStillVisible = false;
-                    }
+                    if (toSelect.value === fromValue) selectedStillVisible = false;
                 } else {
                     toOptions[i].style.display = 'block';
-                    if (toSelect.value === toOptions[i].value) {
-                        selectedStillVisible = true;
-                    }
+                    if (toSelect.value === toOptions[i].value) selectedStillVisible = true;
                 }
             }
 
             if (!selectedStillVisible) {
-                // Pick the first available option
                 for (let i = 0; i < toOptions.length; i++) {
                     if (toOptions[i].style.display !== 'none') {
                         toSelect.value = toOptions[i].value;
@@ -108,17 +180,16 @@
         }
 
         fromSelect.addEventListener('change', updateTargetOptions);
-        // Initial call
         updateTargetOptions();
 
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
-            if (fromSelect.value === toSelect.value) return;
-
             const formData = new FormData(form);
             
-            status.textContent = 'Probíhá převod...';
+            status.style.display = 'block';
+            status.textContent = 'PROBÍHÁ DEKÓDOVÁNÍ A PŘEVOD...';
             status.className = 'status loading';
+            submitBtn.disabled = true;
 
             try {
                 const response = await fetch('/convert', {
@@ -139,16 +210,18 @@
                     a.click();
                     a.remove();
                     
-                    status.textContent = 'Hotovo! Soubor se stahuje.';
+                    status.textContent = 'PŘEVOD ÚSPĚŠNĚ DOKONČEN. SOUBOR ODESLÁN.';
                     status.className = 'status success';
                 } else {
                     const error = await response.text();
-                    status.textContent = 'Chyba: ' + error;
+                    status.textContent = 'CHYBA SYSTÉMU: ' + error.toUpperCase();
                     status.className = 'status error';
                 }
             } catch (err) {
-                status.textContent = 'Chyba sítě: ' + err.message;
+                status.textContent = 'CHYBA SÍTĚ: ' + err.message.toUpperCase();
                 status.className = 'status error';
+            } finally {
+                submitBtn.disabled = false;
             }
         });
     </script>
