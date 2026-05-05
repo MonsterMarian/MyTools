@@ -1,0 +1,9 @@
+node_modules/
+uploads/
+converted_web/
+Output/
+TestOutput/
+*.docx
+*.md
+!README.md
+!test.md

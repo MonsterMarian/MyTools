@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Universal Converter - Web Mode</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Universal <span>Converter</span></h1>
+            <p>Rychlý a prémiový převod vašich dokumentů</p>
+        </header>
+
+        <main>
+            <div class="card">
+                <form id="convertForm">
+                    <div class="form-group">
+                        <label for="file">Vyberte soubor</label>
+                        <div class="file-input-wrapper">
+                            <input type="file" id="file" name="file" required>
+                            <div class="file-dummy">
+                                <span class="icon">📁</span>
+                                <span class="text">Klikněte nebo přetáhněte soubor</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="format-selection">
+                        <div class="form-group">
+                            <label for="from">Z formátu</label>
+                            <select id="from" name="from">
+                                <option value="docx">DOCX</option>
+                                <option value="md">Markdown</option>
+                                <option value="html">HTML</option>
+                            </select>
+                        </div>
+                        <div class="arrow">→</div>
+                        <div class="form-group">
+                            <label for="to">Do formátu</label>
+                            <select id="to" name="to">
+                                <option value="md">Markdown</option>
+                                <option value="docx">DOCX</option>
+                                <option value="html">HTML</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <button type="submit" id="submitBtn">Převést a stáhnout</button>
+                </form>
+                <div id="status" class="status"></div>
+            </div>
+        </main>
+
+        <footer>
+            <p>&copy; 2026 MyTools Premium</p>
+        </footer>
+    </div>
+
+    <script>
+        const form = document.getElementById('convertForm');
+        const status = document.getElementById('status');
+        const fileInput = document.getElementById('file');
+        const fileDummyText = document.querySelector('.file-dummy .text');
+
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                fileDummyText.textContent = e.target.files[0].name;
+            }
+        });
+
+        const fromSelect = document.getElementById('from');
+        const toSelect = document.getElementById('to');
+
+        // Hide same format from 'to' selection
+        function updateTargetOptions() {
+            const fromValue = fromSelect.value;
+            const toOptions = toSelect.options;
+            
+            let selectedStillVisible = false;
+
+            for (let i = 0; i < toOptions.length; i++) {
+                if (toOptions[i].value === fromValue) {
+                    toOptions[i].style.display = 'none';
+                    if (toSelect.value === fromValue) {
+                        // If current selection is now hidden, we must change it
+                        selectedStillVisible = false;
+                    }
+                } else {
+                    toOptions[i].style.display = 'block';
+                    if (toSelect.value === toOptions[i].value) {
+                        selectedStillVisible = true;
+                    }
+                }
+            }
+
+            if (!selectedStillVisible) {
+                // Pick the first available option
+                for (let i = 0; i < toOptions.length; i++) {
+                    if (toOptions[i].style.display !== 'none') {
+                        toSelect.value = toOptions[i].value;
+                        break;
+                    }
+                }
+            }
+        }
+
+        fromSelect.addEventListener('change', updateTargetOptions);
+        // Initial call
+        updateTargetOptions();
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            if (fromSelect.value === toSelect.value) return;
+
+            const formData = new FormData(form);
+            
+            status.textContent = 'Probíhá převod...';
+            status.className = 'status loading';
+
+            try {
+                const response = await fetch('/convert', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (response.ok) {
+                    const blob = await response.blob();
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    const contentDisposition = response.headers.get('Content-Disposition');
+                    const fileName = contentDisposition ? contentDisposition.split('filename=')[1].replace(/"/g, '') : 'converted_file';
+                    
+                    a.href = url;
+                    a.download = fileName;
+                    document.body.appendChild(a);
+                    a.click();
+                    a.remove();
+                    
+                    status.textContent = 'Hotovo! Soubor se stahuje.';
+                    status.className = 'status success';
+                } else {
+                    const error = await response.text();
+                    status.textContent = 'Chyba: ' + error;
+                    status.className = 'status error';
+                }
+            } catch (err) {
+                status.textContent = 'Chyba sítě: ' + err.message;
+                status.className = 'status error';
+            }
+        });
+    </script>
+</body>
+</html>
