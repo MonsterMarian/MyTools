@@ -4,6 +4,8 @@ const path = require("path");
 const MarkdownIt = require('markdown-it');
 const TurndownService = require('turndown');
 const HTMLToDocx = require('html-to-docx');
+const { PDFParse } = require('pdf-parse');
+
 
 const md = new MarkdownIt();
 const turndown = new TurndownService();
@@ -99,10 +101,33 @@ async function docxToHtml(inputPath, outputDir) {
     return { success: true, path: htmlPath };
 }
 
+/**
+ * PDF to Markdown
+ */
+async function pdfToMd(inputPath, outputDir) {
+    const baseName = path.parse(inputPath).name;
+    const fileOutputDir = path.join(outputDir, baseName);
+    await fs.ensureDir(fileOutputDir);
+
+    const dataBuffer = await fs.readFile(inputPath);
+    
+    const parser = new PDFParse({ data: dataBuffer });
+    const result = await parser.getText();
+    await parser.destroy();
+    
+    const mdPath = path.join(fileOutputDir, `${baseName}.md`);
+    await fs.writeFile(mdPath, result.text);
+    
+    return { success: true, path: mdPath };
+}
+
+
 module.exports = {
     docxToMd,
     mdToDocx,
     mdToHtml,
     htmlToMd,
-    docxToHtml
+    docxToHtml,
+    pdfToMd
 };
+

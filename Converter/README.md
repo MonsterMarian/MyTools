@@ -3,7 +3,7 @@
 Tato složka obsahuje nástroje pro převod a zpracování maturitních témat.
 
 ## Obsah
-1. `convert.js` - Převede soubory z `Files_docx` do Markdownu ve složce `Output_md`.
+1. `convert.js` - Převede soubory (DOCX, PDF, HTML) do Markdownu.
 2. `parse_topics.py` - Rozdělí hotové Markdown soubory na menší části (podle nadpisů) pro snadnější zobrazení v aplikaci a vygeneruje `structure.json`.
 
 ## Jak používat

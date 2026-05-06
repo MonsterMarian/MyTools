@@ -37,7 +37,7 @@ async function interactiveMode() {
                 type: 'list',
                 name: 'from',
                 message: 'Zdrojový formát:',
-                choices: ['docx', 'md', 'html']
+                choices: ['docx', 'md', 'html', 'pdf']
             },
             {
                 type: 'list',
@@ -88,6 +88,7 @@ async function batchConvert(options) {
         if (from === 'docx' && ext !== '.docx') continue;
         if (from === 'md' && ext !== '.md') continue;
         if (from === 'html' && ext !== '.html') continue;
+        if (from === 'pdf' && ext !== '.pdf') continue;
 
         try {
             switch (mode) {
@@ -96,6 +97,7 @@ async function batchConvert(options) {
                 case 'md2html': await core.mdToHtml(filePath, resolvedOutput); break;
                 case 'html2md': await core.htmlToMd(filePath, resolvedOutput); break;
                 case 'docx2html': await core.docxToHtml(filePath, resolvedOutput); break;
+                case 'pdf2md': await core.pdfToMd(filePath, resolvedOutput); break;
                 default:
                     console.error(`Unsupported conversion: ${mode}`);
                     return;
@@ -115,7 +117,7 @@ async function main() {
     program
         .version('2.1.0')
         .description('Universal Document Converter')
-        .option('-f, --from <format>', 'Source format (docx, md, html)')
+        .option('-f, --from <format>', 'Source format (docx, md, html, pdf)')
         .option('-t, --to <format>', 'Target format (docx, md, html)')
         .option('-i, --input <path>', 'Input file or directory')
         .option('-o, --output <path>', 'Output directory', './Output')
