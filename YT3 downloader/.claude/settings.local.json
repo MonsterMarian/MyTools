@@ -1,0 +1,22 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(dir C:\\\\Users\\\\Marian\\\\Desktop\\\\YT3 downloader *)",
+      "Bash(where ffmpeg *)",
+      "Bash(where python *)",
+      "Bash(pip install *)",
+      "Bash(winget install *)",
+      "Bash(mkdir -p \"C:\\\\Users\\\\Marian\\\\Music\\\\YT3\")",
+      "Bash(export PATH=\"/c/Users/Marian/AppData/Local/Microsoft/WinGet/Packages/Gyan.FFmpeg_Microsoft.Winget.Source_8wekyb3d8bbwe/ffmpeg-8.1.1-full_build/bin:$PATH\")",
+      "Bash(python \"C:\\\\Users\\\\Marian\\\\Desktop\\\\YT3 downloader\\\\downloader.py\" \"https://www.youtube.com/watch?v=v0QDImL3Q0E\" -o \"C:\\\\Users\\\\Marian\\\\Music\\\\YT3\" -q 192)",
+      "Bash(pip show *)",
+      "Bash(python -c \"import server; print\\('import OK'\\)\")",
+      "Bash(python server.py --no-browser)",
+      "Bash(curl -s -o /dev/null -w \"HTTP %{http_code}\\\\n\" http://127.0.0.1:5000/)",
+      "Bash(curl -s -o /dev/null -w \"CSS %{http_code}\\\\n\" http://127.0.0.1:5000/static/style.css)",
+      "Bash(curl -s -o /dev/null -w \"JS %{http_code}\\\\n\" http://127.0.0.1:5000/static/app.js)",
+      "Bash(curl -s http://127.0.0.1:5000/api/list)",
+      "PowerShell(Get-NetTCPConnection *)"
+    ]
+  }
+}

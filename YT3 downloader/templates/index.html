@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>YT3 Downloader</title>
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<header>
+  <h1>YT3 Downloader</h1>
+  <p class="sub">YouTube → MP3 / MP4</p>
+</header>
+
+<main>
+  <section class="card">
+    <label for="url">URL videa</label>
+    <input id="url" type="url" placeholder="https://www.youtube.com/watch?v=..." autofocus>
+
+    <div class="row">
+      <div class="field">
+        <label>Formát</label>
+        <div class="seg">
+          <button type="button" class="seg-btn active" data-fmt="mp3">MP3 (audio)</button>
+          <button type="button" class="seg-btn" data-fmt="mp4">MP4 (video)</button>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="quality">Kvalita</label>
+        <select id="quality"></select>
+      </div>
+    </div>
+
+    <button id="go" class="primary">Stáhnout</button>
+  </section>
+
+  <section id="jobs" class="card jobs hidden">
+    <h2>Probíhající</h2>
+    <div id="job-list"></div>
+  </section>
+
+  <section class="card">
+    <div class="head-row">
+      <h2>Stažené soubory</h2>
+      <button id="refresh" class="ghost">Obnovit</button>
+    </div>
+    <div id="files"></div>
+  </section>
+</main>
+
+<footer>
+  <small>Lokálně běží na 127.0.0.1:5000</small>
+</footer>
+
+<script src="/static/app.js"></script>
+</body>
+</html>
